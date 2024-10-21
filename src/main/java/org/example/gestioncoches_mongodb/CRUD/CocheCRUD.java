@@ -26,4 +26,8 @@ public class CocheCRUD {
         cocheDAO.ElimicarCoche(coche1);
     }
 
+    public boolean editarCoche(Coche cocheViejo, Coche cocheNuevo) {
+        return cocheDAO.EditarCoche(cocheViejo, cocheNuevo);
+    }
+
 }

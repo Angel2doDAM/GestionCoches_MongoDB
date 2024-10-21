@@ -8,6 +8,7 @@ import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
 import org.example.gestioncoches_mongodb.Clases.Coche;
 import org.example.gestioncoches_mongodb.Conexion.ConnectionDB;
+import org.example.gestioncoches_mongodb.Util.AlertUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +19,8 @@ public class CocheDAO {
     MongoCollection<Document> collection = null;
     String json;
     Document doc;
+
+    List<Coche> coches = new ArrayList<>();
 
     public void conectar() {
         try {
@@ -100,11 +103,14 @@ public class CocheDAO {
     }
 
     public void GuardarCoche(Coche cocheNuevo) {
-        Gson gson = new Gson();
+        if (!comprobacionMatricula(cocheNuevo)) {
+            Gson gson = new Gson();
 
-        json = gson.toJson(cocheNuevo);
-        doc = Document.parse(json);
-        collection.insertOne(doc);
+            json = gson.toJson(cocheNuevo);
+            doc = Document.parse(json);
+            collection.insertOne(doc);
+            AlertUtils.mostrarAcierto("Coche guardado");
+        }
     }
 
     public void ElimicarCoche(Coche cocheEliminar) {
@@ -112,9 +118,25 @@ public class CocheDAO {
         collection.deleteOne(new Document("Matricula", cocheEliminar.getMatricula()));
     }
 
-    public List<Coche> obtenerCoches() {
+    public boolean EditarCoche(Coche cocheViejo, Coche cocheNuevo) {
+        boolean completo = false;
+        if (comprobarCoche(cocheViejo)) {
+            if (cocheViejo.getMatricula().equals(cocheNuevo.getMatricula()) && cocheViejo.getMarca().equals(cocheNuevo.getMarca()) &&
+            cocheViejo.getModelo().equals(cocheNuevo.getModelo()) && cocheViejo.getTipo().equals(cocheNuevo.getTipo())) {
+                AlertUtils.mostrarError("No has cambiado nada, prueba a variar un campo");
+            } else {
+                collection.updateOne(new Document("Matricula", cocheViejo.getMatricula()),
+                new Document("$set", new Document("Matricula", cocheNuevo.getMatricula()).append("Marca", cocheNuevo.getMarca()).append("Modelo", cocheNuevo.getModelo()).append("Tipo", cocheNuevo.getTipo())));
+                AlertUtils.mostrarAcierto("Coche editado");
+                completo = true;
+            }
+        } else {
+            AlertUtils.mostrarError("No puedes editar un coche inexistente");
+        }
+        return completo;
+    }
 
-        List<Coche> coches = new ArrayList<>();
+    public List<Coche> obtenerCoches() {
 
         Gson gson = new Gson();
         MongoCursor<Document> cursor = collection.find().iterator();
@@ -125,6 +147,23 @@ public class CocheDAO {
         }
         cursor.close();
         return coches;
+    }
+
+    public boolean comprobacionMatricula(Coche coche1) {
+        boolean existente = false;
+        if (coches.stream().anyMatch(coche -> coche.getMatricula().equalsIgnoreCase(coche1.getMatricula()))) {
+            AlertUtils.mostrarError("Esa matrícula ya existe");
+            existente = true;
+        }
+        return existente;
+    }
+
+    public boolean comprobarCoche(Coche coche1) {
+        boolean existe = false;
+        if (coches.contains(coche1)) {
+            existe = true;
+        }
+        return existe;
     }
 
 }

@@ -78,17 +78,24 @@ public class HelloController implements Initializable {
 
     @FXML
     void OnGuardarClic(ActionEvent event) {
-        camposVacios();
-        datosCoche1(MatriculaTXT.getText(), MarcaTXT.getText(), ModeloTXT.getText(), TipoComboBox.getValue().toString());
-        cocheCRUD.guardarCoche(coche1);
-        AlertUtils.mostrarAcierto("Coche guardado");
-        cargarTabla();
-        vaciarCampos();
+        if (!camposVacios()) {
+            datosCoche1(MatriculaTXT.getText(), MarcaTXT.getText(), ModeloTXT.getText(), TipoComboBox.getValue().toString());
+            cocheCRUD.guardarCoche(coche1);
+            cargarTabla();
+            vaciarCampos();
+        }
     }
 
     @FXML
     void OnModificarClic(ActionEvent event) {
-        camposVacios();
+        if (!camposVacios()) {
+            Coche cocheViejo = selecCoche;
+            Coche cocheNuevo = new Coche(MatriculaTXT.getText(), MarcaTXT.getText(), ModeloTXT.getText(), TipoComboBox.getValue().toString());
+            if (cocheCRUD.editarCoche(cocheViejo, cocheNuevo)){
+                vaciarCampos();
+                cargarTabla();
+            }
+        }
     }
 
     public void OnMouseClic(MouseEvent mouseEvent) {
@@ -119,6 +126,8 @@ public class HelloController implements Initializable {
     }
 
     public void cargarTabla() {
+        LaTabla.getItems().clear();
+
         coches = cocheCRUD.obtenerCoches();
 
         LaTabla.setItems(FXCollections.observableList(coches)); //añade a la tabla la info de "data"
