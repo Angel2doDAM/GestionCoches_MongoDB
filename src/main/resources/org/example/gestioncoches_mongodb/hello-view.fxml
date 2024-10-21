@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="567.0"
+            prefWidth="600.0" style="-fx-background-color: #3CAB87;" xmlns="http://javafx.com/javafx/22"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="org.example.gestioncoches_mongodb.Controllers.HelloController">
+    <children>
+        <TextField fx:id="MatriculaTXT" layoutX="91.0" layoutY="36.0" style="-fx-background-color: #45C49B;"/>
+        <TextField fx:id="MarcaTXT" layoutX="91.0" layoutY="78.0" style="-fx-background-color: #45C49B;"/>
+        <Label layoutX="28.0" layoutY="127.0" text="Modelo" textFill="#9effe4">
+            <font>
+                <Font name="System Bold" size="12.0"/>
+            </font>
+        </Label>
+        <TextField fx:id="ModeloTXT" layoutX="91.0" layoutY="123.0" style="-fx-background-color: #45C49B;"/>
+        <ComboBox fx:id="TipoComboBox" layoutX="91.0" layoutY="165.0" prefWidth="150.0"
+                  style="-fx-background-color: #45C49B;"/>
+        <Button layoutX="23.0" layoutY="229.0" mnemonicParsing="false" onAction="#OnSalirClic"
+                style="-fx-background-color: #45C49B;" text="Salir" textFill="#9effe4"/>
+        <Button layoutX="91.0" layoutY="229.0" mnemonicParsing="false" onAction="#OnGuardarClic"
+                style="-fx-background-color: #45C49B;" text="Guardar" textFill="#9effe4"/>
+        <Button layoutX="166.0" layoutY="229.0" mnemonicParsing="false" onAction="#OnModificarClic"
+                style="-fx-background-color: #45C49B;" text="Modificar" textFill="#9effe4"/>
+        <Button layoutX="247.0" layoutY="229.0" mnemonicParsing="false" onAction="#OnEliminarClic"
+                style="-fx-background-color: #45C49B;" text="Eliminar" textFill="#9effe4"/>
+        <Label layoutX="22.0" layoutY="544.0" text="Coches v6"/>
+        <TableView fx:id="LaTabla" layoutX="36.0" layoutY="275.0" onMouseClicked="#OnMouseClic" prefHeight="263.0"
+                   prefWidth="540.0" style="-fx-background-color: #45C49B;">
+            <columns>
+                <TableColumn fx:id="ColMatricula" prefWidth="135.0" text="Matricula"/>
+                <TableColumn fx:id="ColMarca" prefWidth="135.0" text="Marca"/>
+                <TableColumn fx:id="ColModelo" prefWidth="135.0" text="Modelo"/>
+                <TableColumn fx:id="ColTipo" prefWidth="135.0" text="Tipo"/>
+            </columns>
+        </TableView>
+        <Label layoutX="27.0" layoutY="82.0" text="Marca" textFill="#9effe4">
+            <font>
+                <Font name="System Bold" size="12.0"/>
+            </font>
+        </Label>
+        <Label layoutX="27.0" layoutY="40.0" text="Matrícula" textFill="#9effe4">
+            <font>
+                <Font name="System Bold" size="12.0"/>
+            </font>
+        </Label>
+        <Label layoutX="28.0" layoutY="169.0" text="Tipo" textFill="#9effe4">
+            <font>
+                <Font name="System Bold" size="12.0"/>
+            </font>
+        </Label>
+    </children>
+</AnchorPane>
