@@ -80,9 +80,10 @@ public class HelloController implements Initializable {
     void OnGuardarClic(ActionEvent event) {
         if (!camposVacios()) {
             datosCoche1(MatriculaTXT.getText(), MarcaTXT.getText(), ModeloTXT.getText(), TipoComboBox.getValue().toString());
-            cocheCRUD.guardarCoche(coche1);
-            cargarTabla();
-            vaciarCampos();
+            if (cocheCRUD.guardarCoche(coche1)) {
+                cargarTabla();
+                vaciarCampos();
+            }
         }
     }
 
@@ -91,7 +92,7 @@ public class HelloController implements Initializable {
         if (!camposVacios()) {
             Coche cocheViejo = selecCoche;
             Coche cocheNuevo = new Coche(MatriculaTXT.getText(), MarcaTXT.getText(), ModeloTXT.getText(), TipoComboBox.getValue().toString());
-            if (cocheCRUD.editarCoche(cocheViejo, cocheNuevo)){
+            if (cocheCRUD.editarCoche(cocheViejo, cocheNuevo)) {
                 vaciarCampos();
                 cargarTabla();
             }
@@ -105,6 +106,7 @@ public class HelloController implements Initializable {
 
     @FXML
     void OnSalirClic(ActionEvent event) {
+        cocheCRUD.desconectar();
         System.exit(0);
     }
 

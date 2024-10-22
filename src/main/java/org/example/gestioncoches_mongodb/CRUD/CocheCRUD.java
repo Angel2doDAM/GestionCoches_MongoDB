@@ -18,8 +18,8 @@ public class CocheCRUD {
         return cocheDAO.obtenerCoches();
     }
 
-    public void guardarCoche(Coche coche1) {
-        cocheDAO.GuardarCoche(coche1);
+    public boolean guardarCoche(Coche coche1) {
+        return cocheDAO.GuardarCoche(coche1);
     }
 
     public void eliminarCoche(Coche coche1) {
@@ -28,6 +28,10 @@ public class CocheCRUD {
 
     public boolean editarCoche(Coche cocheViejo, Coche cocheNuevo) {
         return cocheDAO.EditarCoche(cocheViejo, cocheNuevo);
+    }
+
+    public void desconectar(){
+        cocheDAO.desconectar();
     }
 
 }

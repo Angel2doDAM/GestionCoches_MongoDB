@@ -13,6 +13,7 @@ import org.example.gestioncoches_mongodb.Util.AlertUtils;
 import java.util.ArrayList;
 import java.util.List;
 
+//Clase con todos los métodos
 public class CocheDAO {
 
     MongoClient con;
@@ -22,6 +23,9 @@ public class CocheDAO {
 
     List<Coche> coches = new ArrayList<>();
 
+//════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗
+
+//    Función para conectar con la base de datos y añadir 4 coches prefab para así poder cargarlos en el initialice
     public void conectar() {
         try {
             con = ConnectionDB.conectar();
@@ -54,6 +58,7 @@ public class CocheDAO {
             System.err.println(exception.getClass().getName() + ": " + exception.getMessage());
         }
 
+//        Creación de los coches prefab
         Coche coche1 = new Coche();
 
         coche1.setMatricula("0168JKL");
@@ -82,6 +87,7 @@ public class CocheDAO {
         coche4.setModelo("Duster");
         coche4.setTipo("4x4");
 
+//        Inserción de los coches prefab en la base de datos
         Gson gson = new Gson();
 
         json = gson.toJson(coche1);
@@ -101,41 +107,63 @@ public class CocheDAO {
         collection.insertOne(doc);
 
     }
+//════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╣
 
-    public void GuardarCoche(Coche cocheNuevo) {
+//    Función para guardar un coche nuevo en la base de datos
+    public boolean GuardarCoche(Coche cocheNuevo) {
+//        Compruebo si la matricula a introducir ya existe, pues hay muchos coches con las mismas especificaciones pero nunca la misma matrícula
         if (!comprobacionMatricula(cocheNuevo)) {
             Gson gson = new Gson();
 
+//            inserto el coche en la base de datos
             json = gson.toJson(cocheNuevo);
             doc = Document.parse(json);
             collection.insertOne(doc);
             AlertUtils.mostrarAcierto("Coche guardado");
+            return true;
+        } else {
+//            Si ya existe devuelvo false para no vaciar los campos
+            return false;
         }
     }
 
+//════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╣
+
+//    Función para eliminar un coche de la base de datos
     public void ElimicarCoche(Coche cocheEliminar) {
 
+//        Elimino el coche de la base de datos teniendo en cuanta la matrícula, ya que es un atributo único
         collection.deleteOne(new Document("Matricula", cocheEliminar.getMatricula()));
     }
 
+//════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╣
+
+//    Función para editar un coche existente en la base de datos
     public boolean EditarCoche(Coche cocheViejo, Coche cocheNuevo) {
         boolean completo = false;
+//        Compruebo si el coche existe dentro de la base de datos
         if (comprobarCoche(cocheViejo)) {
+//            Compruebo si todos los campos son iguales a los anteriores, pues sería una tonteria actualizarlo sin modificar nada
             if (cocheViejo.getMatricula().equals(cocheNuevo.getMatricula()) && cocheViejo.getMarca().equals(cocheNuevo.getMarca()) &&
             cocheViejo.getModelo().equals(cocheNuevo.getModelo()) && cocheViejo.getTipo().equals(cocheNuevo.getTipo())) {
                 AlertUtils.mostrarError("No has cambiado nada, prueba a variar un campo");
             } else {
+//                Actualizo el coche en la base de datos
                 collection.updateOne(new Document("Matricula", cocheViejo.getMatricula()),
                 new Document("$set", new Document("Matricula", cocheNuevo.getMatricula()).append("Marca", cocheNuevo.getMarca()).append("Modelo", cocheNuevo.getModelo()).append("Tipo", cocheNuevo.getTipo())));
                 AlertUtils.mostrarAcierto("Coche editado");
                 completo = true;
             }
         } else {
+//            Si el coche no existe en la base de datos
             AlertUtils.mostrarError("No puedes editar un coche inexistente");
         }
         return completo;
     }
 
+//════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╣
+
+//    Función para obtener todos los coches de la tabla de datos
     public List<Coche> obtenerCoches() {
 
         Gson gson = new Gson();
@@ -149,14 +177,20 @@ public class CocheDAO {
         return coches;
     }
 
+//════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╣
+
+//    Función para comprobar si una matrícula ya existe en la base de datos
     public boolean comprobacionMatricula(Coche coche1) {
         boolean existente = false;
+//        Si
         if (coches.stream().anyMatch(coche -> coche.getMatricula().equalsIgnoreCase(coche1.getMatricula()))) {
             AlertUtils.mostrarError("Esa matrícula ya existe");
             existente = true;
         }
         return existente;
     }
+
+//════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╣
 
     public boolean comprobarCoche(Coche coche1) {
         boolean existe = false;
@@ -165,5 +199,13 @@ public class CocheDAO {
         }
         return existe;
     }
+
+//════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╣
+
+    public void desconectar(){
+        ConnectionDB.desconectar(con);
+    }
+
+//════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝
 
 }
