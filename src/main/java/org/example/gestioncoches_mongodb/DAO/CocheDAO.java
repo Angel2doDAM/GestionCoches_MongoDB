@@ -182,7 +182,7 @@ public class CocheDAO {
 //    Función para comprobar si una matrícula ya existe en la base de datos
     public boolean comprobacionMatricula(Coche coche1) {
         boolean existente = false;
-//        Si
+//        Compara el atributo matrícula de todos los coches para ver si alguno coincide
         if (coches.stream().anyMatch(coche -> coche.getMatricula().equalsIgnoreCase(coche1.getMatricula()))) {
             AlertUtils.mostrarError("Esa matrícula ya existe");
             existente = true;
@@ -192,8 +192,10 @@ public class CocheDAO {
 
 //════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╣
 
+//    Función para comprobar si un coche estero
     public boolean comprobarCoche(Coche coche1) {
         boolean existe = false;
+//        Recorre coches y va comparando 1 a 1 el coche pasado
         if (coches.contains(coche1)) {
             existe = true;
         }
@@ -202,6 +204,7 @@ public class CocheDAO {
 
 //════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╣
 
+//    Función para conectar a la base de datos
     public void desconectar(){
         ConnectionDB.desconectar(con);
     }
